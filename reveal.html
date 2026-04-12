@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Révélation du Thème</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600&display=swap');
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ── Vidéo plein écran ── */
+        #mainVideo {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 1;
+        }
+
+        /* ── Écran de démarrage ── */
+        #startScreen {
+            position: fixed;
+            inset: 0;
+            z-index: 30;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: opacity 0.6s ease;
+        }
+
+        #startScreen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .start-inner {
+            text-align: center;
+        }
+
+        .play-ring {
+            width: 88px;
+            height: 88px;
+            border: 3px solid rgba(255, 215, 0, 0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: #ffd700;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.3);
+            animation: glow-ring 2s ease-in-out infinite;
+        }
+
+        .play-ring svg {
+            width: 36px;
+            height: 36px;
+            margin-left: 4px;
+        }
+
+        @keyframes glow-ring {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 0 14px rgba(255, 215, 0, 0);
+            }
+        }
+
+        #startScreen:hover .play-ring {
+            transform: scale(1.1);
+        }
+
+        .start-label {
+            color: rgba(255, 215, 0, 0.7);
+            font-size: 0.85rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+        }
+
+        /* ── Overlay buffering ── */
+        #bufferOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        #bufferOverlay.visible {
+            display: flex;
+        }
+
+        .spinner {
+            width: 52px;
+            height: 52px;
+            border: 3px solid rgba(255, 215, 0, 0.2);
+            border-top-color: #ffd700;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .buffer-text {
+            color: rgba(255, 215, 0, 0.8);
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+        }
+
+        /* ── Countdown (coin bas-gauche) ── */
+        #countdown {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 15;
+            font-size: 0.8rem;
+            color: rgba(255, 215, 0, 0.6);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: rgba(0, 0, 0, 0.45);
+            padding: 6px 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            backdrop-filter: blur(6px);
+            transition: opacity 0.5s;
+        }
+
+        /* ── REVEAL OVERLAY (couvre toute la vidéo) ── */
+        #revealOverlay {
+            position: fixed;
+            inset: 0;
+            z-index: 20;
+            /* fond totalement opaque : la vidéo est masquée complètement */
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        #revealOverlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Particules derrière le texte */
+        .bg-particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.5);
+            animation: floatUp linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(110vh) scale(0);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-10vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* Halo central */
+        .halo {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(ellipse, rgba(255, 215, 0, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: pulse 3s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+
+            50% {
+                transform: scale(1.15);
+                opacity: 1;
+            }
+        }
+
+        /* Contenu centré */
+        .reveal-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 0 24px;
+        }
+
+        .reveal-label {
+            text-transform: uppercase;
+            letter-spacing: 0.35em;
+            font-size: 0.72rem;
+            color: rgba(255, 215, 0, 0.55);
+            font-weight: 600;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.6s 0.2s ease, transform 0.6s 0.2s ease;
+        }
+
+        #revealOverlay.visible .reveal-label {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 10vw, 7rem);
+            color: #ffd700;
+            text-shadow: 0 0 60px rgba(255, 215, 0, 0.6), 0 0 120px rgba(255, 165, 0, 0.3);
+            line-height: 1.1;
+            letter-spacing: 0.02em;
+        }
+
+        /* Animation lettre par lettre */
+        .reveal-title .word {
+            display: inline-block;
+            overflow: hidden;
+            vertical-align: bottom;
+        }
+
+        .reveal-title .word span {
+            display: inline-block;
+            transform: translateY(115%);
+        }
+
+        #revealOverlay.visible .reveal-title .word span {
+            animation: slideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .reveal-sub {
+            margin-top: 28px;
+            font-size: clamp(0.85rem, 2vw, 1.1rem);
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 0.12em;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.6s 1.2s ease, transform 0.6s 1.2s ease;
+        }
+
+        #revealOverlay.visible .reveal-sub {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Trait décoratif */
+        .divider {
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ffd700, transparent);
+            margin: 22px auto;
+            opacity: 0;
+            transition: opacity 0.6s 0.8s ease;
+        }
+
+        #revealOverlay.visible .divider {
+            opacity: 1;
+        }
+
+        /* ── Score Card (apparaît après révélation) ── */
+        #scoreCard {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 25;
+            padding: 20px 24px;
+            background: linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.7) 100%);
+            border-top: 1px solid rgba(255,215,0,0.2);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            transform: translateY(100%);
+            transition: transform 0.7s cubic-bezier(0.16,1,0.3,1);
+        }
+        #scoreCard.visible {
+            transform: translateY(0);
+        }
+        .sc-left {
+            display: flex; flex-direction: column; gap: 2px;
+        }
+        .sc-player {
+            font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+            color: rgba(255,215,0,0.5); margin-bottom: 2px;
+        }
+        .sc-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem; color: #ffd700;
+        }
+        .sc-right {
+            display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+        }
+        .sc-score-box {
+            text-align: center;
+            background: rgba(255,215,0,0.08);
+            border: 1px solid rgba(255,215,0,0.25);
+            border-radius: 12px;
+            padding: 10px 20px;
+        }
+        .sc-score-label {
+            font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: rgba(255,215,0,0.5); display: block; margin-bottom: 2px;
+        }
+        .sc-score-val {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem; color: #ffd700;
+            font-weight: 700;
+        }
+        .sc-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: #ffd700; color: #000;
+            border: none; border-radius: 10px;
+            padding: 12px 22px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700; font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sc-btn:hover { background: #ffe747; transform: translateY(-2px); }
+        .sc-btn-sec {
+            background: transparent;
+            border: 1px solid rgba(255,215,0,0.3);
+            color: rgba(255,215,0,0.7);
+        }
+        .sc-btn-sec:hover { background: rgba(255,215,0,0.1); border-color: #ffd700; color: #ffd700; }
+
+        /* ── Toast GAS not configured ── */
+        #gasToast {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+            z-index: 30;
+            background: rgba(255,107,107,0.15);
+            border: 1px solid rgba(255,107,107,0.4);
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-size: 0.8rem; color: #ff9999;
+            opacity: 0; transition: all 0.3s;
+            text-align: center; max-width: 400px;
+            pointer-events: none;
+        }
+        #gasToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ── Preloader Overlay ── */
+        #preloaderOverlay {
+            position: fixed; inset: 0; z-index: 100;
+            background: #000;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.6s ease;
+        }
+        .preloader-content {
+            text-align: center;
+            width: 100%; max-width: 300px;
+            padding: 20px;
+        }
+        .preloader-text {
+            color: rgba(255, 215, 0, 0.8);
+            font-size: 0.9rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin: 20px 0 15px;
+        }
+        .progress-container {
+            width: 100%; height: 4px;
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .progress-fill {
+            width: 0%; height: 100%;
+            background: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            transition: width 0.2s ease;
+        }
+        .progress-percent {
+            color: rgba(255, 215, 0, 0.5);
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Vidéo plein écran -->
+    <video id="mainVideo" playsinline>
+        <!-- La source sera injectée dynamiquement après le pré-chargement -->
+    </video>
+
+    <!-- Overlay buffering (lecture en cours) -->
+    <div id="bufferOverlay">
+        <div class="spinner"></div>
+        <p class="buffer-text">Chargement en cours…</p>
+    </div>
+
+    <!-- NOUVEAU : Overlay de pré-chargement initial -->
+    <div id="preloaderOverlay">
+        <div class="preloader-content">
+            <div class="spinner"></div>
+            <p class="preloader-text">Préparation de la révélation...</p>
+            <div class="progress-container">
+                <div id="progressBar" class="progress-fill"></div>
+            </div>
+            <p id="progressText" class="progress-percent">0%</p>
+        </div>
+    </div>
+
+    <!-- Countdown -->
+    <div id="countdown">⏱ Révélation dans <strong id="countdownNum">18</strong>s</div>
+
+    <!-- Écran de démarrage (caché par défaut jusqu'au chargement) -->
+    <div id="startScreen" class="hidden">
+        <div class="start-inner">
+            <div class="play-ring">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z" />
+                </svg>
+            </div>
+            <p class="start-label">Cliquez pour lancer</p>
+        </div>
+    </div>
+
+    <!-- OVERLAY RÉVÉLATION (plein écran par-dessus la vidéo) -->
+    <div id="revealOverlay">
+        <div class="bg-particles" id="bgParticles"></div>
+        <div class="halo"></div>
+        <div class="reveal-content">
+            <p class="reveal-label">🎉 Thème de la semaine — Lundi</p>
+            <h1 class="reveal-title" id="revealTitle"></h1>
+            <div class="divider"></div>
+            <p class="reveal-sub">Préparez vos plus belles chemises à carreaux !</p>
+        </div>
+    </div>
+
+    <!-- Score Card (glisse depuis le bas après révélation) -->
+    <div id="scoreCard">
+        <div class="sc-left">
+            <span class="sc-player">Joueur</span>
+            <span class="sc-name" id="scName">—</span>
+        </div>
+        <div class="sc-right">
+            <div class="sc-score-box">
+                <span class="sc-score-label">Score</span>
+                <span class="sc-score-val" id="scScore">—</span>
+            </div>
+            <div class="sc-score-box">
+                <span class="sc-score-label">Temps</span>
+                <span class="sc-score-val" id="scTime">—</span>
+            </div>
+            <button class="sc-btn" onclick="window.location.href='leaderboard.html?name='+encodeURIComponent(window._playerName||'')">
+                🏆 Classement
+            </button>
+            <button class="sc-btn sc-btn-sec" onclick="window.location.href='index.html'">
+                🔄 Rejouer
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast GAS not configured -->
+    <div id="gasToast">⚠️ Score non enregistré : URL GAS non configurée.<br>Ouvre leaderboard.html pour la configurer.</div>
+
+    <script>
+        /* ── Configuration Vidéo ── */
+        const VIDEO_URL = "https://res.cloudinary.com/djz4uow1p/video/upload/v1776018668/UTV_iNTRO_2010-Present_A_New_India_Logo_On_UTV_Motion_Pictures_ORIGINAL_w0e3a8.mp4";
+
+        /* ── Pré-chargement Robuste (Fetch + Blob) ── */
+        async function preloadVideo(url) {
+            const preloader = document.getElementById('preloaderOverlay');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const startScreen = document.getElementById('startScreen');
+            const video = document.getElementById('mainVideo');
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Erreur de chargement vidéo");
+
+                const contentLength = response.headers.get('content-length');
+                if (!contentLength) {
+                    console.warn("Content-Length manquant, progression impossible");
+                }
+
+                const total = parseInt(contentLength, 10);
+                let loaded = 0;
+
+                const reader = response.body.getReader();
+                const chunks = [];
+
+                while(true) {
+                    const {done, value} = await reader.read();
+                    if (done) break;
+                    chunks.push(value);
+                    loaded += value.length;
+                    
+                    if (total) {
+                        const percent = Math.round((loaded / total) * 100);
+                        progressBar.style.width = percent + "%";
+                        progressText.textContent = percent + "%";
+                    }
+                }
+
+                // Conversion en Blob URL
+                const blob = new Blob(chunks, { type: 'video/mp4' });
+                const blobUrl = URL.createObjectURL(blob);
+                
+                video.src = blobUrl;
+                video.load();
+
+                // On cache le préloader et on affiche l'écran de démarrage
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                    startScreen.classList.remove('hidden');
+                }, 600);
+
+            } catch (err) {
+                console.error("Erreur de pré-chargement:", err);
+                // Fallback : Tentative de chargement direct si le fetch échoue (CORS / Réseau)
+                video.src = url;
+                video.load();
+                
+                setTimeout(() => {
+                    preloader.style.opacity = '0';
+                    setTimeout(() => {
+                        preloader.style.display = 'none';
+                        startScreen.classList.remove('hidden');
+                    }, 600);
+                }, 1500);
+                
+                document.querySelector('.preloader-text').textContent = "Connexion lente... Lancement direct.";
+                document.querySelector('.preloader-text').style.color = "#ffd700";
+            }
+        }
+
+        /* ── Particules ── */
+        const bg = document.getElementById('bgParticles');
+        if (bg) {
+            for (let i = 0; i < 50; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                const size = Math.random() * 4 + 1;
+                p.style.cssText = `
+          left:${Math.random() * 100}%;
+          width:${size}px; height:${size}px;
+          animation-duration:${Math.random() * 14 + 8}s;
+          animation-delay:${Math.random() * 12}s;
+        `;
+                bg.appendChild(p);
+            }
+        }
+
+        /* ── Lettres animées ── */
+        const THEME_TEXT = 'Chemise Carreau';
+        const titleEl = document.getElementById('revealTitle');
+        THEME_TEXT.split(' ').forEach((word, wi) => {
+            const wSpan = document.createElement('span');
+            wSpan.className = 'word';
+            word.split('').forEach((char, ci) => {
+                const s = document.createElement('span');
+                s.textContent = char;
+                s.style.animationDelay = `${(wi * word.length + ci) * 0.05 + 0.3}s`;
+                wSpan.appendChild(s);
+            });
+            if (wi > 0) titleEl.appendChild(document.createTextNode('\u00A0'));
+            titleEl.appendChild(wSpan);
+        });
+
+        /* ── Lire les paramètres URL (depuis index.html) ── */
+        const urlParams = new URLSearchParams(window.location.search);
+        const _name  = urlParams.get('name')  || '';
+        const _score = parseInt(urlParams.get('score') || '0', 10);
+        const _time  = parseInt(urlParams.get('time')  || '0', 10);
+        const _hint  = parseInt(urlParams.get('hint')  || '1', 10);
+        window._playerName = _name;
+
+        const GAS_KEY = 'antigravity_gas_url';
+
+        /* ── Afficher le score card ── */
+        function showScoreCard() {
+            if (_name) {
+                document.getElementById('scName').textContent = _name;
+                document.getElementById('scScore').textContent = _score;
+                document.getElementById('scTime').textContent = _time + 's';
+                saveScoreToGAS();
+            } else {
+                document.querySelector('.sc-left').style.display = 'none';
+                document.querySelectorAll('.sc-score-box').forEach(el => el.style.display = 'none');
+            }
+            document.getElementById('scoreCard').classList.add('visible');
+        }
+
+        /* ── Enregistrer le score dans GAS ── */
+        async function saveScoreToGAS() {
+            const gasUrl = localStorage.getItem(GAS_KEY) || '';
+            if (!gasUrl) {
+                showGasToast();
+                return;
+            }
+            try {
+                await fetch(gasUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: _name, score: _score, time: _time, hint: _hint })
+                });
+            } catch (e) {
+                console.warn('GAS save failed:', e);
+                showGasToast();
+            }
+        }
+
+        function showGasToast() {
+            const toast = document.getElementById('gasToast');
+            if (toast) {
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 5000);
+            }
+        }
+
+        /* ── Logique vidéo ── */
+        const video = document.getElementById('mainVideo');
+        const revealOvl = document.getElementById('revealOverlay');
+        const bufferOvl = document.getElementById('bufferOverlay');
+        const countdownEl = document.getElementById('countdown');
+        const countdownNum = document.getElementById('countdownNum');
+
+        const REVEAL_AT = 18;
+        let revealed = false;
+        let realTimer = null;
+        let realStart = null;
+        let realElapsed = 0;
+
+        function triggerReveal() {
+            if (revealed) return;
+            revealed = true;
+            if (realTimer) clearInterval(realTimer);
+            revealOvl.classList.add('visible');
+            countdownEl.style.opacity = '0';
+            setTimeout(() => countdownEl.style.display = 'none', 600);
+            setTimeout(showScoreCard, 2500);
+        }
+
+        function startRealTimer() {
+            if (realTimer) return;
+            realStart = Date.now() - realElapsed * 1000;
+            realTimer = setInterval(() => {
+                realElapsed = (Date.now() - realStart) / 1000;
+                if (!revealed) {
+                    const rem = Math.max(0, REVEAL_AT - realElapsed);
+                    countdownNum.textContent = Math.ceil(rem);
+                }
+                if (realElapsed >= REVEAL_AT) triggerReveal();
+            }, 200);
+        }
+
+        function pauseRealTimer() {
+            if (realTimer) {
+                clearInterval(realTimer);
+                realTimer = null;
+                realElapsed = (Date.now() - realStart) / 1000;
+            }
+        }
+
+        video.addEventListener('play', () => { startRealTimer(); bufferOvl.classList.remove('visible'); });
+        video.addEventListener('pause', () => { if (!revealed) pauseRealTimer(); });
+        video.addEventListener('waiting', () => { bufferOvl.classList.add('visible'); });
+        video.addEventListener('playing', () => { bufferOvl.classList.remove('visible'); });
+        video.addEventListener('timeupdate', () => {
+            if (video.currentTime >= REVEAL_AT) triggerReveal();
+        });
+        video.addEventListener('ended', () => { if (realTimer) clearInterval(realTimer); triggerReveal(); });
+
+        /* Écran de démarrage → lance avec son au clic */
+        const startScreen = document.getElementById('startScreen');
+        startScreen.addEventListener('click', () => {
+            startScreen.classList.add('hidden');
+            video.play();
+        });
+
+        // Lancement du pré-chargement
+        preloadVideo(VIDEO_URL);
+    </script>
+</body>
+
+</html>
