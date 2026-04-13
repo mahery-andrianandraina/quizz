@@ -8,7 +8,7 @@
   <meta name="description" content="Classement général du jeu de devinette Antigravity" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -31,7 +31,7 @@
     html, body {
       width: 100vw; height: 100vh;
       overflow: hidden;
-      background: #000; /* Solid back wall */
+      background: #000;
       color: var(--text);
       font-family: 'Inter', sans-serif;
     }
@@ -107,35 +107,9 @@
     }
     .page-sub { margin-top: 4px; font-size: 0.8rem; color: var(--text-dim); }
 
-    /* ─── GAS Config ─── */
-    #gasConfig {
-      background: rgba(56, 189, 248, 0.05);
-      border: 1px dashed var(--border);
-      border-radius: 14px; padding: 16px; margin-bottom: 16px;
-      flex-shrink: 0;
-    }
-    #gasConfig label {
-      display: block; font-size: 0.72rem; letter-spacing: 0.2em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 8px;
-    }
-    .gas-row { display: flex; gap: 10px; }
-    .gas-row input {
-      flex: 1;
-      background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-      border-radius: 10px; padding: 10px 16px;
-      font-size: 0.85rem; color: var(--text); outline: none;
-    }
-    .gas-row input:focus { border-color: var(--accent); }
-    .gas-row button {
-      background: linear-gradient(135deg, var(--accent) 0%, #1e40af 100%); color: #fff; border: none;
-      border-radius: 10px; padding: 10px 20px;
-      font-weight: 700; cursor: pointer; text-transform: uppercase;
-    }
-    .gas-hint { font-size: 0.72rem; color: var(--text-dim); margin-top: 6px; }
-
     /* Top 3 List Badges */
     .medal-icon { font-size: 1.2rem; }
-    
+
     /* ─── Split Layout ─── */
     .split-layout {
       display: flex;
@@ -143,7 +117,7 @@
       gap: 30px;
       width: 100%;
       flex: 1;
-      overflow: hidden; /* no page scroll */
+      overflow: hidden;
       align-items: stretch;
       margin-top: 10px;
     }
@@ -211,13 +185,13 @@
     .rank-badge {
       display: inline-flex; align-items: center; justify-content: center;
       width: 32px; height: 32px; border-radius: 8px; font-weight: 700; font-size: 0.9rem;
-      background: rgba(0,0,0,0.3); color: var(--text-dim); border: 1px solid var(--border);flex-shrink:0;
+      background: rgba(0,0,0,0.3); color: var(--text-dim); border: 1px solid var(--border); flex-shrink: 0;
     }
     .rank-badge.r1 { background: rgba(255,215,0,0.15); color: var(--gold); border-color: var(--gold); }
     .rank-badge.r2 { background: rgba(192,192,192,0.12); color: var(--silver); border-color: var(--silver); }
     .rank-badge.r3 { background: rgba(205,127,50,0.12); color: var(--bronze); border-color: var(--bronze); }
 
-    .name-cell { flex: 1; font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff;}
+    .name-cell { flex: 1; font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #fff; }
     .score-cell { font-family: 'Playfair Display', serif; font-weight: 700; color: var(--accent); font-size: 1.1rem; text-align: right; }
 
     /* ─── States ─── */
@@ -233,7 +207,7 @@
       width: 44px; height: 44px; border: 3px solid var(--accent-dim); border-top-color: var(--accent);
       border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px;
     }
-    @keyframes spin { to { transform: rotate(360deg); }}
+    @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ─── Buttons ─── */
     .actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 16px; flex-shrink: 0; }
@@ -275,36 +249,22 @@
           <p class="page-sub">Les meilleurs détectives de la mode</p>
         </header>
 
-        <!-- GAS Config -->
-        <div id="gasConfig">
-          <label>🔗 URL du Google Apps Script (Web App)</label>
-          <div class="gas-row">
-            <input type="url" id="gasUrlInput" placeholder="https://script.google.com/macros/s/AKfycbzyk5g9lxERcsUvUDyOfo8QswF7SqUolrKi4HMpzw8wSBFp676YOdnk2gIWFOgbkGZ2/exec" />
-            <button onclick="saveGasUrl()">Enregistrer</button>
-          </div>
-          <p class="gas-hint">Une fois configuré, cette section disparaît. L'URL est sauvegardée localement.</p>
-        </div>
-
         <div class="split-layout">
           <!-- LEFT: Video Pane -->
           <div class="split-left">
             <div class="video-frame-sidebar">
-              <video id="bg-video" autoplay loop muted playsinline>
-                <source src="./dior_rihanna.mp4" type="video/mp4">
-              </video>
+              <video id="bg-video" autoplay loop muted playsinline></video>
             </div>
           </div>
 
-          <!-- RIGHT: Others -->
+          <!-- RIGHT: Leaderboard -->
           <div class="split-right">
-            <!-- Table header -->
             <div class="lb-header">
               <span class="lb-title">🎯 CLASSEMENT COMPLET</span>
               <span class="lb-count" id="lbCount">—</span>
             </div>
 
             <div class="scroll-container">
-              <!-- Loading / empty / error states -->
               <div id="loadingState">
                 <div class="spinner"></div>
                 <div class="state-title">Chargement...</div>
@@ -318,10 +278,9 @@
               <div id="errorState" style="display:none">
                 <div class="state-icon">⚠️</div>
                 <div class="state-title">Impossible de charger le classement</div>
-                <p class="state-sub" id="errorMsg">Vérifiez l'URL GAS et votre connexion internet.</p>
+                <p class="state-sub" id="errorMsg">Vérifiez votre connexion internet.</p>
               </div>
 
-              <!-- Table / Grid -->
               <div class="lb-grid" id="lbBody" style="display:none"></div>
             </div>
           </div>
@@ -329,27 +288,30 @@
 
         <!-- Actions -->
         <div class="actions">
-          <button class="btn btn-primary" onclick="window.location.href='index.html'">Rejouer</button>
-          <button class="btn btn-outline" onclick="loadLeaderboard()">Actualiser</button>
-          <button class="btn btn-outline" onclick="window.location.href='reveal.html'">Révélation</button>
+          <button class="btn btn-primary"  onclick="window.location.href='index.html'">Rejouer</button>
+          <button class="btn btn-outline"  onclick="loadLeaderboard()">Actualiser</button>
+          <button class="btn btn-outline"  onclick="window.location.href='reveal.html'">Révélation</button>
         </div>
     </div>
   </div>
 
   <script>
-    /* ═══════════════════════════════════════════
-       BG PARTICLES & VIDEO PRELOAD
-    ═══════════════════════════════════════════ */
+    /* ══════════════════════════════════════════════
+       ▶ CONFIGURATION — modifiez uniquement ici
+    ══════════════════════════════════════════════ */
+    const GAS_URL   = 'https://script.google.com/macros/s/AKfycbzyk5g9lxERcsUvUDyOfo8QswF7SqUolrKi4HMpzw8wSBFp676YOdnk2gIWFOgbkGZ2/exec'; 
+    const VIDEO_URL = "https://res.cloudinary.com/djz4uow1p/video/upload/v1776018615/dior_rihanna_xb5myg.mp4";
+
+    /* ══════════════════════════════════════════════
+       BG PARTICLES & VIDEO
+    ══════════════════════════════════════════════ */
     function initBg() {
         const bg = document.getElementById('bg');
-        for(let i=0; i<40; i++) {
+        for (let i = 0; i < 40; i++) {
             const p = document.createElement('div');
             p.className = 'particle';
             const size = Math.random() * 4 + 1;
-            p.style.cssText = `
-                width: ${size}px; height: ${size}px;
-                left: ${Math.random() * 100}%; top: ${Math.random() * 100}%;
-            `;
+            p.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;`;
             bg.appendChild(p);
             gsap.to(p, {
                 x: (Math.random() - 0.5) * 300,
@@ -360,83 +322,35 @@
             });
         }
 
-        // Script de pré-chargement vidéo pour le fond
         const video = document.getElementById('bg-video');
-        const VIDEO_URL = "https://res.cloudinary.com/djz4uow1p/video/upload/v1776018615/dior_rihanna_xb5myg.mp4";
-        
-        // On rend la vidéo invisible au début
         video.style.opacity = '0';
         video.style.transition = 'opacity 1s ease';
-        
-        // On change la source
         video.src = VIDEO_URL;
         video.load();
-
-        video.oncanplaythrough = () => {
-            video.play();
-            video.style.opacity = '1';
-        };
+        video.oncanplaythrough = () => { video.play(); video.style.opacity = '1'; };
     }
     initBg();
 
-    /* ═══════════════════════════════════════════
-       GAS URL CONFIG
-    ═══════════════════════════════════════════ */
-    const GAS_KEY = 'antigravity_gas_url';
-
-    function saveGasUrl() {
-      const val = document.getElementById('gasUrlInput').value.trim();
-      if (!val.startsWith('https://')) {
-        alert('URL invalide. Elle doit commencer par https://');
-        return;
-      }
-      localStorage.setItem(GAS_KEY, val);
-      document.getElementById('gasConfig').style.display = 'none';
-      loadLeaderboard();
-    }
-
-    function getGasUrl() {
-      return localStorage.getItem(GAS_KEY) || '';
-    }
-
-    // Pre-fill and hide if already configured
+    /* ══════════════════════════════════════════════
+       INIT
+    ══════════════════════════════════════════════ */
     window.addEventListener('DOMContentLoaded', () => {
-      const saved = getGasUrl();
-      if (saved) {
-        document.getElementById('gasConfig').style.display = 'none';
-      } else {
-        document.getElementById('gasUrlInput').value = saved;
-      }
-
-      // Read current player from URL params
       const params = new URLSearchParams(location.search);
       window.currentPlayerName = params.get('name') || '';
-
       loadLeaderboard();
     });
 
-    /* ═══════════════════════════════════════════
+    /* ══════════════════════════════════════════════
        LOAD LEADERBOARD
-    ═══════════════════════════════════════════ */
+    ══════════════════════════════════════════════ */
     async function loadLeaderboard() {
-      const url = getGasUrl();
-
-      // Show loading
       document.getElementById('loadingState').style.display = 'block';
-      document.getElementById('emptyState').style.display = 'none';
-      document.getElementById('errorState').style.display = 'none';
-      document.getElementById('lbBody').style.display = 'none';
-
-      if (!url) {
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('errorState').style.display = 'block';
-        document.getElementById('errorMsg').textContent = 'Aucune URL GAS configurée. Renseignez l\'URL ci-dessus.';
-        document.getElementById('gasConfig').style.display = 'block';
-        return;
-      }
+      document.getElementById('emptyState').style.display   = 'none';
+      document.getElementById('errorState').style.display   = 'none';
+      document.getElementById('lbBody').style.display       = 'none';
 
       try {
-        const res = await fetch(url + '?action=getScores', { mode: 'cors' });
+        const res = await fetch(GAS_URL + '?action=getScores', { mode: 'cors' });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         document.getElementById('loadingState').style.display = 'none';
@@ -449,22 +363,20 @@
         renderLeaderboard(data);
       } catch (err) {
         document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('errorState').style.display = 'block';
-        // Message clair si l'utilisateur ouvre le fichier directement (file://)
+        document.getElementById('errorState').style.display   = 'block';
         if (location.protocol === 'file:') {
           document.getElementById('errorMsg').textContent =
-            '⚠️ Fichier ouvert en local (file://). Utilisez un serveur local (ex: VS Code Live Server) ou hébergez la page pour que fetch() fonctionne.';
+            '⚠️ Fichier ouvert en local (file://). Utilisez un serveur local ou hébergez la page.';
         } else {
           document.getElementById('errorMsg').textContent = 'Erreur : ' + err.message;
         }
       }
     }
 
-    /* ═══════════════════════════════════════════
+    /* ══════════════════════════════════════════════
        RENDER
-    ═══════════════════════════════════════════ */
+    ══════════════════════════════════════════════ */
     function renderLeaderboard(entries) {
-      // Sort by score desc, then time asc (tie breaker)
       entries.sort((a, b) => {
         if (b.score !== a.score) return b.score - a.score;
         return (a.time || Infinity) - (b.time || Infinity);
@@ -474,8 +386,8 @@
       tbody.innerHTML = '';
 
       document.getElementById('loadingState').style.display = 'none';
-      document.getElementById('emptyState').style.display = entries.length === 0 ? 'block' : 'none';
-      document.getElementById('errorState').style.display = 'none';
+      document.getElementById('emptyState').style.display   = entries.length === 0 ? 'block' : 'none';
+      document.getElementById('errorState').style.display   = 'none';
 
       if (entries.length === 0) return;
 
@@ -484,20 +396,20 @@
 
       entries.forEach((entry, i) => {
         const rank = i + 1;
-        const row = document.createElement('div');
-        const isCurrent = currentUrlName && entry.name && currentUrlName.toLowerCase() === entry.name.toLowerCase();
-        
+        const row  = document.createElement('div');
+        const isCurrent = currentUrlName && entry.name &&
+                          currentUrlName.toLowerCase() === entry.name.toLowerCase();
+
         row.className = 'lb-row' + (isCurrent ? ' current-player' : '');
         row.style.animationDelay = (i * 0.05) + 's';
 
         const timeStr = entry.time ? ` <span style="font-size:0.75rem;opacity:0.7">(${entry.time}s)</span>` : '';
-        
-        // Define Medals/Badges
+
         let badgeContent = rank;
-        let badgeClass = '';
-        if(rank === 1) { badgeContent = '🥇'; badgeClass = 'r1 medal-icon'; }
-        if(rank === 2) { badgeContent = '🥈'; badgeClass = 'r2 medal-icon'; }
-        if(rank === 3) { badgeContent = '🥉'; badgeClass = 'r3 medal-icon'; }
+        let badgeClass   = '';
+        if (rank === 1) { badgeContent = '🥇'; badgeClass = 'r1 medal-icon'; }
+        if (rank === 2) { badgeContent = '🥈'; badgeClass = 'r2 medal-icon'; }
+        if (rank === 3) { badgeContent = '🥉'; badgeClass = 'r3 medal-icon'; }
 
         row.innerHTML = `
           <div class="rank-badge ${badgeClass}">${badgeContent}</div>
