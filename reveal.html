@@ -79,15 +79,8 @@
         }
 
         @keyframes glow-ring {
-
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.3);
-            }
-
-            50% {
-                box-shadow: 0 0 0 14px rgba(255, 215, 0, 0);
-            }
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.3); }
+            50% { box-shadow: 0 0 0 14px rgba(255, 215, 0, 0); }
         }
 
         #startScreen:hover .play-ring {
@@ -128,9 +121,7 @@
         }
 
         @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
 
         .buffer-text {
@@ -163,7 +154,6 @@
             position: fixed;
             inset: 0;
             z-index: 20;
-            /* fond totalement opaque : la vidéo est masquée complètement */
             background: #000;
             display: flex;
             flex-direction: column;
@@ -196,23 +186,10 @@
         }
 
         @keyframes floatUp {
-            0% {
-                transform: translateY(110vh) scale(0);
-                opacity: 0;
-            }
-
-            10% {
-                opacity: 1;
-            }
-
-            90% {
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateY(-10vh) scale(1.5);
-                opacity: 0;
-            }
+            0% { transform: translateY(110vh) scale(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
         }
 
         /* Halo central */
@@ -227,17 +204,8 @@
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 0.6;
-            }
-
-            50% {
-                transform: scale(1.15);
-                opacity: 1;
-            }
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.15); opacity: 1; }
         }
 
         /* Contenu centré */
@@ -291,9 +259,7 @@
         }
 
         @keyframes slideUp {
-            to {
-                transform: translateY(0);
-            }
+            to { transform: translateY(0); }
         }
 
         .reveal-sub {
@@ -395,21 +361,6 @@
         }
         .sc-btn-sec:hover { background: rgba(255,215,0,0.1); border-color: #ffd700; color: #ffd700; }
 
-        /* ── Toast GAS not configured ── */
-        #gasToast {
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
-            z-index: 30;
-            background: rgba(255,107,107,0.15);
-            border: 1px solid rgba(255,107,107,0.4);
-            border-radius: 12px;
-            padding: 12px 20px;
-            font-size: 0.8rem; color: #ff9999;
-            opacity: 0; transition: all 0.3s;
-            text-align: center; max-width: 400px;
-            pointer-events: none;
-        }
-        #gasToast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
         /* ── Preloader Overlay ── */
         #preloaderOverlay {
             position: fixed; inset: 0; z-index: 100;
@@ -463,7 +414,7 @@
         <p class="buffer-text">Chargement en cours…</p>
     </div>
 
-    <!-- NOUVEAU : Overlay de pré-chargement initial -->
+    <!-- Overlay de pré-chargement initial -->
     <div id="preloaderOverlay">
         <div class="preloader-content">
             <div class="spinner"></div>
@@ -526,42 +477,41 @@
         </div>
     </div>
 
-    <!-- Toast GAS not configured -->
-    <div id="gasToast">⚠️ Score non enregistré : URL GAS non configurée.<br>Ouvre leaderboard.html pour la configurer.</div>
-
     <script>
-        /* ── Configuration Vidéo ── */
+        /* ══════════════════════════════════════════════
+           ▶ CONFIGURATION — modifiez uniquement ici
+        ══════════════════════════════════════════════ */
+        const GAS_URL   = 'https://script.google.com/macros/s/AKfycbzyk5g9lxERcsUvUDyOfo8QswF7SqUolrKi4HMpzw8wSBFp676YOdnk2gIWFOgbkGZ2/exec'; // ← votre URL GAS
         const VIDEO_URL = "https://res.cloudinary.com/djz4uow1p/video/upload/v1776018668/UTV_iNTRO_2010-Present_A_New_India_Logo_On_UTV_Motion_Pictures_ORIGINAL_w0e3a8.mp4";
+        const THEME_TEXT  = 'Chemise Carreau';
+        const REVEAL_AT   = 18; // secondes avant révélation
 
-        /* ── Pré-chargement Robuste (Fetch + Blob) ── */
+        /* ══════════════════════════════════════════════
+           Pré-chargement Robuste (Fetch + Blob)
+        ══════════════════════════════════════════════ */
         async function preloadVideo(url) {
-            const preloader = document.getElementById('preloaderOverlay');
+            const preloader   = document.getElementById('preloaderOverlay');
             const progressBar = document.getElementById('progressBar');
             const progressText = document.getElementById('progressText');
-            const startScreen = document.getElementById('startScreen');
-            const video = document.getElementById('mainVideo');
+            const startScreen  = document.getElementById('startScreen');
+            const video        = document.getElementById('mainVideo');
 
             try {
                 const response = await fetch(url);
                 if (!response.ok) throw new Error("Erreur de chargement vidéo");
 
                 const contentLength = response.headers.get('content-length');
-                if (!contentLength) {
-                    console.warn("Content-Length manquant, progression impossible");
-                }
-
                 const total = parseInt(contentLength, 10);
                 let loaded = 0;
 
                 const reader = response.body.getReader();
                 const chunks = [];
 
-                while(true) {
-                    const {done, value} = await reader.read();
+                while (true) {
+                    const { done, value } = await reader.read();
                     if (done) break;
                     chunks.push(value);
                     loaded += value.length;
-                    
                     if (total) {
                         const percent = Math.round((loaded / total) * 100);
                         progressBar.style.width = percent + "%";
@@ -569,14 +519,11 @@
                     }
                 }
 
-                // Conversion en Blob URL
-                const blob = new Blob(chunks, { type: 'video/mp4' });
+                const blob    = new Blob(chunks, { type: 'video/mp4' });
                 const blobUrl = URL.createObjectURL(blob);
-                
                 video.src = blobUrl;
                 video.load();
 
-                // On cache le préloader et on affiche l'écran de démarrage
                 preloader.style.opacity = '0';
                 setTimeout(() => {
                     preloader.style.display = 'none';
@@ -585,10 +532,8 @@
 
             } catch (err) {
                 console.error("Erreur de pré-chargement:", err);
-                // Fallback : Tentative de chargement direct si le fetch échoue (CORS / Réseau)
                 video.src = url;
                 video.load();
-                
                 setTimeout(() => {
                     preloader.style.opacity = '0';
                     setTimeout(() => {
@@ -596,7 +541,6 @@
                         startScreen.classList.remove('hidden');
                     }, 600);
                 }, 1500);
-                
                 document.querySelector('.preloader-text').textContent = "Connexion lente... Lancement direct.";
                 document.querySelector('.preloader-text').style.color = "#ffd700";
             }
@@ -610,17 +554,16 @@
                 p.className = 'particle';
                 const size = Math.random() * 4 + 1;
                 p.style.cssText = `
-          left:${Math.random() * 100}%;
-          width:${size}px; height:${size}px;
-          animation-duration:${Math.random() * 14 + 8}s;
-          animation-delay:${Math.random() * 12}s;
-        `;
+                    left:${Math.random() * 100}%;
+                    width:${size}px; height:${size}px;
+                    animation-duration:${Math.random() * 14 + 8}s;
+                    animation-delay:${Math.random() * 12}s;
+                `;
                 bg.appendChild(p);
             }
         }
 
         /* ── Lettres animées ── */
-        const THEME_TEXT = 'Chemise Carreau';
         const titleEl = document.getElementById('revealTitle');
         THEME_TEXT.split(' ').forEach((word, wi) => {
             const wSpan = document.createElement('span');
@@ -643,14 +586,12 @@
         const _hint  = parseInt(urlParams.get('hint')  || '1', 10);
         window._playerName = _name;
 
-        const GAS_KEY = 'antigravity_gas_url';
-
         /* ── Afficher le score card ── */
         function showScoreCard() {
             if (_name) {
-                document.getElementById('scName').textContent = _name;
+                document.getElementById('scName').textContent  = _name;
                 document.getElementById('scScore').textContent = _score;
-                document.getElementById('scTime').textContent = _time + 's';
+                document.getElementById('scTime').textContent  = _time + 's';
                 saveScoreToGAS();
             } else {
                 document.querySelector('.sc-left').style.display = 'none';
@@ -661,13 +602,8 @@
 
         /* ── Enregistrer le score dans GAS ── */
         async function saveScoreToGAS() {
-            const gasUrl = localStorage.getItem(GAS_KEY) || '';
-            if (!gasUrl) {
-                showGasToast();
-                return;
-            }
             try {
-                await fetch(gasUrl, {
+                await fetch(GAS_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/json' },
@@ -675,29 +611,19 @@
                 });
             } catch (e) {
                 console.warn('GAS save failed:', e);
-                showGasToast();
-            }
-        }
-
-        function showGasToast() {
-            const toast = document.getElementById('gasToast');
-            if (toast) {
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 5000);
             }
         }
 
         /* ── Logique vidéo ── */
-        const video = document.getElementById('mainVideo');
-        const revealOvl = document.getElementById('revealOverlay');
-        const bufferOvl = document.getElementById('bufferOverlay');
+        const video       = document.getElementById('mainVideo');
+        const revealOvl   = document.getElementById('revealOverlay');
+        const bufferOvl   = document.getElementById('bufferOverlay');
         const countdownEl = document.getElementById('countdown');
         const countdownNum = document.getElementById('countdownNum');
 
-        const REVEAL_AT = 18;
-        let revealed = false;
-        let realTimer = null;
-        let realStart = null;
+        let revealed    = false;
+        let realTimer   = null;
+        let realStart   = null;
         let realElapsed = 0;
 
         function triggerReveal() {
@@ -731,19 +657,16 @@
             }
         }
 
-        video.addEventListener('play', () => { startRealTimer(); bufferOvl.classList.remove('visible'); });
-        video.addEventListener('pause', () => { if (!revealed) pauseRealTimer(); });
-        video.addEventListener('waiting', () => { bufferOvl.classList.add('visible'); });
-        video.addEventListener('playing', () => { bufferOvl.classList.remove('visible'); });
-        video.addEventListener('timeupdate', () => {
-            if (video.currentTime >= REVEAL_AT) triggerReveal();
-        });
-        video.addEventListener('ended', () => { if (realTimer) clearInterval(realTimer); triggerReveal(); });
+        video.addEventListener('play',       () => { startRealTimer(); bufferOvl.classList.remove('visible'); });
+        video.addEventListener('pause',      () => { if (!revealed) pauseRealTimer(); });
+        video.addEventListener('waiting',    () => { bufferOvl.classList.add('visible'); });
+        video.addEventListener('playing',    () => { bufferOvl.classList.remove('visible'); });
+        video.addEventListener('timeupdate', () => { if (video.currentTime >= REVEAL_AT) triggerReveal(); });
+        video.addEventListener('ended',      () => { if (realTimer) clearInterval(realTimer); triggerReveal(); });
 
         /* Écran de démarrage → lance avec son au clic */
-        const startScreen = document.getElementById('startScreen');
-        startScreen.addEventListener('click', () => {
-            startScreen.classList.add('hidden');
+        document.getElementById('startScreen').addEventListener('click', () => {
+            document.getElementById('startScreen').classList.add('hidden');
             video.play();
         });
 
