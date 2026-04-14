@@ -18,7 +18,7 @@
             --border: rgba(245,200,66,0.22);
             --border-bright: rgba(245,200,66,0.7);
             --text: #eef0f8;
-            --text-dim: #7a85a8;
+            --text-dim: #ffffff;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -188,9 +188,9 @@
         }
 
         .input-label {
-            display: block; font-size: 0.58rem; letter-spacing: 0.35em;
+            display: block; font-size: 0.85rem; letter-spacing: 0.2em;
             text-transform: uppercase; color: var(--gold);
-            margin-bottom: 8px; text-align: left;
+            margin-bottom: 8px; text-align: center;
         }
         input[type="text"] {
             width: 100%;
@@ -243,8 +243,8 @@
 
         .panel-title {
             font-family: 'Orbitron', monospace;
-            font-size: 0.6rem; font-weight: 700;
-            letter-spacing: 0.4em; text-transform: uppercase;
+            font-size: 0.72rem; font-weight: 700;
+            letter-spacing: 0.35em; text-transform: uppercase;
             color: var(--gold);
             display: flex; align-items: center; gap: 12px;
         }
@@ -278,7 +278,8 @@
         }
         @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
         .players-label {
-            font-size: 0.65rem; letter-spacing: 0.25em;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.75rem; letter-spacing: 0.15em;
             text-transform: uppercase; color: var(--text-dim);
             margin-top: 2px;
         }
@@ -352,30 +353,30 @@
         .lb-row:hover { background: rgba(245,200,66,0.05); border-color: var(--border); }
         .lb-rank {
             font-family: 'Orbitron', monospace;
-            font-size: 0.65rem; font-weight: 700;
+            font-size: 0.78rem; font-weight: 700;
             color: var(--text-dim); width: 22px; text-align: center; flex-shrink: 0;
         }
         .lb-rank.top1 { color: #ffd700; }
         .lb-rank.top2 { color: #c0c0c0; }
         .lb-rank.top3 { color: #cd7f32; }
         .lb-name {
-            flex: 1; font-weight: 700; font-size: 0.85rem;
+            flex: 1; font-weight: 700; font-size: 0.9rem;
             color: var(--text); letter-spacing: 0.04em;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .lb-score {
             font-family: 'Orbitron', monospace;
-            font-size: 0.78rem; font-weight: 700; color: var(--gold); flex-shrink: 0;
+            font-size: 0.92rem; font-weight: 700; color: var(--gold); flex-shrink: 0;
         }
         .lb-empty {
             text-align: center; color: var(--text-dim);
-            font-size: 0.75rem; letter-spacing: 0.15em;
+            font-size: 0.88rem; letter-spacing: 0.1em;
             padding: 20px; text-transform: uppercase;
         }
         .lb-loading {
             display: flex; align-items: center; justify-content: center;
             gap: 8px; padding: 20px; color: var(--text-dim);
-            font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+            font-size: 0.88rem; letter-spacing: 0.1em; text-transform: uppercase;
         }
         .lb-loading::before {
             content: ''; width: 14px; height: 14px; border-radius: 50%;
