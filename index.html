@@ -1236,23 +1236,22 @@
         /* ── Custom Cursor ── */
         #custom-cursor {
             position: fixed; pointer-events: none; z-index: 10000;
-            width: 40px; height: 40px; transform: translate(-50%, -50%);
-            display: none; transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 32px; height: 32px; transform: translate(-50%, -50%);
+            border: 2px solid var(--gold); border-radius: 50%;
+            box-shadow: 0 0 10px rgba(245, 200, 66, 0.5);
+            display: none; transition: transform 0.15s ease-out, background 0.15s ease-out;
         }
-        .cursor-cross {
-            position: absolute; inset: 0;
-            background: 
-                linear-gradient(to right, var(--gold) 1px, transparent 1px) 50% 50% / 100% 2px no-repeat,
-                linear-gradient(to bottom, var(--gold) 1px, transparent 1px) 50% 50% / 2px 100% no-repeat;
-            opacity: 0.6;
+        #custom-cursor::after {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 8px; height: 8px; background: var(--gold);
+            border-radius: 50%; transform: translate(-50%, -50%);
+            box-shadow: 0 0 8px var(--gold);
         }
-        .cursor-circle {
-            position: absolute; inset: 6px;
-            border: 1px solid var(--gold); border-radius: 50%;
-            opacity: 0.3; transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+        .cursor-hover {
+            transform: translate(-50%, -50%) scale(1.5) !important;
+            border-color: #fff !important;
+            background: rgba(245, 200, 66, 0.15);
         }
-        .cursor-hover .cursor-circle { transform: scale(1.6); opacity: 0.8; border-color: #fff; }
-        .cursor-hover .cursor-cross { transform: scale(0.6); opacity: 1; }
 
         /* ── Combo System UI ── */
         #combo-badge {
@@ -1309,6 +1308,41 @@
             text-shadow: 0 0 40px var(--gold), 0 0 80px var(--gold-glow);
             z-index: 100; pointer-events: none; letter-spacing: 0.2em;
         }
+
+        /* ── God Tier 3: 3D Tilt ── */
+        #app {
+            perspective: 1200px;
+        }
+        .game-shell {
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+            will-change: transform;
+        }
+
+        /* ── God Tier 3: Cursor Trail ── */
+        .cursor-trail {
+            position: fixed; top: 0; left: 0; width: 12px; height: 12px;
+            background: var(--gold); border-radius: 50%;
+            pointer-events: none; opacity: 0; z-index: 9999;
+            filter: blur(2px);
+        }
+
+        /* ── God Tier 3: FEVER MODE (Bleu Électrique) ── */
+        .fever-mode {
+            --gold: #00f2ff;
+            --gold-glow: rgba(0, 242, 255, 0.6);
+            --gold-dim: rgba(0, 242, 255, 0.15);
+        }
+        .fever-mode #hud-logo {
+            animation: textNeon 0.5s ease infinite alternate;
+        }
+        @keyframes textNeon {
+            from { text-shadow: 0 0 10px var(--gold-glow); }
+            to   { text-shadow: 0 0 25px #fff, 0 0 40px var(--gold); }
+        }
+        .fever-mode .image-vignette {
+            box-shadow: inset 0 0 100px rgba(0, 242, 255, 0.2);
+        }
     </style>
 </head>
 
@@ -1320,10 +1354,7 @@
         <div class="vignette"></div>
     </div>
     
-    <div id="custom-cursor">
-        <div class="cursor-cross"></div>
-        <div class="cursor-circle"></div>
-    </div>
+    <div id="custom-cursor"></div>
 
     <div class="feedback-overlay" id="feedback">
         <div class="feedback-inner">
@@ -1689,11 +1720,27 @@
                 particles.push({el: p, anim: anim, ox: parseFloat(p.style.left), oy: parseFloat(p.style.top)});
             }
 
-            // Interactive Cursor HUD & Particle avoidance
+            // Interactive Cursor
             const cursor = document.getElementById('custom-cursor');
+            
             window.addEventListener('mousemove', e => {
                 const { clientX: x, clientY: y } = e;
-                gsap.set(cursor, { x, y });
+                if (cursor) {
+                    cursor.style.left = `${x}px`;
+                    cursor.style.top = `${y}px`;
+                }
+
+                // 3D Tilt Parallax on Game Shell
+                if(document.getElementById('screen-game').style.display !== 'none') {
+                    const shell = document.querySelector('.game-shell');
+                    if(shell) {
+                        const cx = window.innerWidth / 2;
+                        const cy = window.innerHeight / 2;
+                        const dx = (x - cx) / cx;
+                        const dy = (y - cy) / cy;
+                        gsap.to(shell, { rotateY: dx * 6, rotateX: -dy * 6, duration: 0.5, ease: "power2.out" });
+                    }
+                }
                 
                 // Repousser légèrement les particules proches
                 particles.forEach(p => {
@@ -1855,8 +1902,21 @@
                 gameState.combo++;
                 btn.classList.add('correct');
                 const timeTaken = (Date.now() - gameState.startTime) / 1000;
+                
+                // Coyote Time check (150ms buffer)
+                const isLegal = timeTaken <= 20.15;
+                if(!isLegal) {
+                     // Too late, but we could trigger a "Close One!" message
+                }
+
                 gameState.totalTime += timeTaken;
                 
+                // Fever Mode Trigger
+                if(gameState.combo >= 5) {
+                    document.body.classList.add('fever-mode');
+                    SFX.play('correct'); // Extra spark
+                }
+
                 // Bonus Combo & Perfect
                 let points = 1000;
                 const comboBonus = (gameState.combo > 1) ? (gameState.combo - 1) * 200 : 0;
