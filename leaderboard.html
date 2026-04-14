@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Classement</title>
+  <title>Classement — Antigravity</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
@@ -22,8 +22,8 @@
       --panel:        rgba(8,12,28,0.92);
       --border:       rgba(245,200,66,0.22);
       --border-bright:rgba(245,200,66,0.7);
-      --text:         #eef0f8;
-      --text-dim:     #7a85a8;
+      --text:         #ffffff;
+      --text-dim:     #ffffff;
       --shadow:       0 25px 60px rgba(0,0,0,0.7);
     }
 
@@ -92,7 +92,7 @@
     .page-header { text-align: center; flex-shrink: 0; }
     .page-tag {
       font-family: 'Orbitron', monospace;
-      font-size: 0.52rem; letter-spacing: 0.45em;
+      font-size: 0.72rem; letter-spacing: 0.45em;
       text-transform: uppercase; color: var(--gold); margin-bottom: 4px;
     }
     .page-title {
@@ -105,7 +105,7 @@
     }
     .page-title span { color: var(--gold); }
     .page-sub {
-      font-size: 0.72rem; letter-spacing: 0.22em;
+      font-size: 0.85rem; letter-spacing: 0.22em;
       text-transform: uppercase; color: var(--text-dim); margin-top: 4px;
     }
 
@@ -163,12 +163,12 @@
     }
     .lb-title {
       font-family: 'Orbitron', monospace;
-      font-size: 0.58rem; letter-spacing: 0.35em;
+      font-size: 0.72rem; letter-spacing: 0.35em;
       text-transform: uppercase; color: var(--gold); font-weight: 700;
     }
     .lb-count {
       font-family: 'Orbitron', monospace;
-      font-size: 0.62rem; color: var(--text-dim); letter-spacing: 0.15em;
+      font-size: 0.75rem; color: var(--text-dim); letter-spacing: 0.15em;
     }
 
     .scroll-container {
@@ -210,7 +210,7 @@
       display: inline-flex; align-items: center; justify-content: center;
       width: 28px; height: 28px;
       font-family: 'Orbitron', monospace;
-      font-weight: 700; font-size: 0.65rem; flex-shrink: 0;
+      font-weight: 700; font-size: 0.78rem; flex-shrink: 0;
       background: rgba(0,0,0,0.3); color: var(--text-dim);
       border: 1px solid rgba(245,200,66,0.15);
       clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
@@ -225,7 +225,7 @@
     }
     .score-cell {
       font-family: 'Orbitron', monospace;
-      font-weight: 700; color: var(--gold); font-size: 0.82rem; text-align: right; flex-shrink: 0;
+      font-weight: 700; color: var(--gold); font-size: 0.92rem; text-align: right; flex-shrink: 0;
     }
     .lb-row.current-player {
       background: rgba(245,200,66,0.07);
@@ -253,7 +253,7 @@
       font-size: 1.2rem; letter-spacing: 0.1em;
       margin-bottom: 6px; color: var(--gold);
     }
-    .state-sub { font-size: 0.75rem; letter-spacing: 0.1em; color: var(--text-dim); }
+    .state-sub { font-size: 0.88rem; letter-spacing: 0.1em; color: var(--text-dim); }
 
     .spinner {
       width: 36px; height: 36px;
@@ -343,7 +343,7 @@
   <div id="app">
 
     <header class="page-header">
-      <p class="page-tag">Révelation de Théme — Episode 2</p>
+      <p class="page-tag">Antigravity — Saison 2026</p>
       <h1 class="page-title">Classement <span>Général</span></h1>
       <div class="title-rule"><div class="title-diamond"></div></div>
       <p class="page-sub">Les meilleurs détectives de la mode</p>
@@ -356,7 +356,7 @@
         <div class="corner tl"></div>
         <div class="corner br"></div>
         <div class="lb-header">
-          <span class="lb-title">CLASSEMENT COMPLET</span>
+          <span class="lb-title">🎯 CLASSEMENT COMPLET</span>
           <span class="lb-count" id="lbCount">—</span>
         </div>
         <div class="scroll-container">
